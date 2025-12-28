@@ -3,251 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Planner Pro</title>
+    <title>Flow Planner</title>
     <style>
         :root {
-            --bg: #f4f6fb;
+            --accent: #6366f1;
+            --bg: #f8fafc;
             --card: #ffffff;
-            --text: #1f2937;
-            --main: #6366f1;
-            --done: #9ca3af;
-            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
         }
 
         body.dark {
-            --bg: #0f172a;
+            --bg: #020617;
             --card: #1e293b;
-            --text: #e5e7eb;
-            --border: #334155;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
         }
 
-        * { box-sizing: border-box; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 
         body {
+            background-color: var(--bg);
+            color: var(--text-main);
             margin: 0;
-            background: var(--bg);
-            color: var(--text);
             display: flex;
             justify-content: center;
-            padding: 20px;
             min-height: 100vh;
+            padding: 40px 20px;
         }
 
-        .planner {
+        .app-container {
             width: 100%;
-            max-width: 450px;
-            background: var(--card);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,.1);
-            height: fit-content;
+            max-width: 400px;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        header h1 { margin: 0; font-size: 24px; color: var(--main); }
+        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin: 0; }
 
-        .theme-toggle {
-            background: var(--border);
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .input-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .input-box input, .input-box select {
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+        /* The "Advanced" Input Section */
+        .input-group {
             background: var(--card);
-            color: var(--text);
+            padding: 8px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            border: none;
+            padding: 12px 15px;
+            background: transparent;
+            color: var(--text-main);
+            font-size: 16px;
             outline: none;
         }
 
-        .input-box input:focus { border-color: var(--main); }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            padding: 0 8px 8px 8px;
+        }
 
-        #task { grid-column: span 2; }
+        input[type="time"], select {
+            background: var(--bg);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 12px;
+            color: var(--text-sub);
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
 
         .add-btn {
-            grid-column: span 2;
-            background: var(--main);
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .add-btn:hover { opacity: 0.9; }
-
-        .stats {
-            padding: 10px 0;
-            border-top: 1px solid var(--border);
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--done);
-        }
-
-        ul { list-style: none; padding: 0; margin: 0; }
-
-        li {
-            background: rgba(99, 102, 241, 0.05);
-            padding: 12px;
+            width: 36px;
+            height: 36px;
             border-radius: 12px;
-            margin-bottom: 10px;
+            margin-left: auto;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Task List Styling */
+        .task-card {
+            background: var(--card);
+            margin-bottom: 12px;
+            padding: 16px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-left: 4px solid var(--main);
-            animation: fadeIn 0.3s ease;
+            gap: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, opacity 0.2s;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .task-card:hover { transform: translateY(-2px); }
 
-        li.done {
-            opacity: 0.6;
-            border-left-color: var(--done);
-        }
-
-        li.done span { text-decoration: line-through; color: var(--done); }
-
-        li span { flex: 1; font-size: 15px; }
-
-        li small { display: block; font-size: 12px; color: var(--done); margin-top: 2px; }
-
-        .action-btn {
-            background: none;
-            border: none;
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--accent);
+            border-radius: 7px;
             cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
-        .check-btn { color: #10b981; }
-        .del-btn { color: #ef4444; }
+        .task-card.done { opacity: 0.5; }
+        .task-card.done .checkbox { background: var(--accent); color: white; }
+        .task-card.done .checkbox::after { content: '✓'; font-size: 14px; }
+        .task-card.done .title { text-decoration: line-through; }
+
+        .task-info { flex: 1; }
+        .title { display: block; font-weight: 600; margin-bottom: 2px; }
+        .meta { font-size: 12px; color: var(--text-sub); }
+
+        .delete-icon {
+            color: #fee2e2;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 18px;
+        }
+        .task-card:hover .delete-icon { color: #ef4444; }
+
+        .empty { text-align: center; margin-top: 50px; color: var(--text-sub); font-size: 14px; }
     </style>
 </head>
 <body>
 
-<div class="planner">
+<div class="app-container">
     <header>
-        <h1>Planner</h1>
-        <button class="theme-toggle" onclick="toggleDark()" id="themeBtn">🌙</button>
+        <h1 id="date-heading">Today</h1>
+        <button onclick="document.body.classList.toggle('dark')" style="background:none; border:none; font-size: 20px; cursor:pointer;">🌓</button>
     </header>
 
-<div class="input-box">
-        <input type="text" id="task" placeholder="What needs to be done?" autocomplete="off">
-        <input type="time" id="time">
-        <select id="day">
-            <option value="Today">Today</option>
-            <option value="Tomorrow">Tomorrow</option>
-            <option value="This Week">This Week</option>
-        </select>
-        <button class="add-btn" onclick="addTask()">Add Task</button>
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="I want to..." autocomplete="off">
+        <div class="input-row">
+            <input type="time" id="timeInput">
+            <select id="prioInput">
+                <option value="1">High</option>
+                <option value="2" selected>Normal</option>
+                <option value="3">Low</option>
+            </select>
+            <button class="add-btn" onclick="addTask()">+</button>
+        </div>
     </div>
 
-    <div class="stats" id="stats">Done: 0 / Total: 0</div>
-    <ul id="list"></ul>
+    <div id="taskList"></div>
 </div>
 
 <script>
-    const taskInput = document.getElementById("task");
-    const timeInput = document.getElementById("time");
-    const dayInput = document.getElementById("day");
-    const list = document.getElementById("list");
-    const stats = document.getElementById("stats");
-
-    // Load tasks on startup
-    let tasks = JSON.parse(localStorage.getItem("planner_tasks")) || [];
-
-    function renderTasks() {
-        list.innerHTML = "";
-        tasks.forEach((task, index) => {
-            const li = document.createElement("li");
-            if (task.done) li.classList.add("done");
-
-            li.innerHTML = 
-                <button class="action-btn check-btn" onclick="toggleDone(${index})">✔</button>
-                <span>
-                    ${task.text}
-                    <small>📅 ${task.day} ${task.time ? " • ⏰ " + task.time : ""}</small>
-                </span>
-                <button class="action-btn del-btn" onclick="deleteTask(${index})">🗑</button>
-            ;
-            list.appendChild(li);
-        });
-        updateStats();
-        localStorage.setItem("planner_tasks", JSON.stringify(tasks));
-    }
+    let tasks = JSON.parse(localStorage.getItem("simple_flow_tasks")) || [];
 
     function addTask() {
-        const text = taskInput.value.trim();
+        const text = document.getElementById("taskInput").value.trim();
+        const time = document.getElementById("timeInput").value;
+        const prio = document.getElementById("prioInput").value;
+
         if (!text) return;
 
-        const newTask = {
-            text: text,
-            time: timeInput.value,
-            day: dayInput.value,
+        tasks.push({
+            id: Date.now(),
+            text,
+            time,
+            prio,
             done: false
-        };
+        });
 
-        tasks.push(newTask);
-        taskInput.value = "";
-        timeInput.value = "";
-        renderTasks();
+        document.getElementById("taskInput").value = "";
+        render();
     }
 
-    function toggleDone(index) {
-        tasks[index].done = !tasks[index].done;
-        renderTasks();
+    function render() {
+        const list = document.getElementById("taskList");
+        
+        // Sorting Logic: Priority first, then Time
+        tasks.sort((a, b) => a.done - b.done || a.prio - b.prio || (a.time > b.time ? 1 : -1));
+
+        list.innerHTML = tasks.length ? "" : '<div class="empty">Your list is empty. Rest up!</div>';
+
+        tasks.forEach(task => {
+            const card = document.createElement("div");
+            card.className = `task-card ${task.done ? 'done' : ''}`;
+            card.innerHTML = `
+                <div class="checkbox" onclick="toggleTask(${task.id})"></div>
+                <div class="task-info">
+                    <span class="title">${task.text}</span>
+                    <span class="meta">${task.time ? '⏰ ' + task.time : ''} ${task.prio == 1 ? '• 🔴' : ''}</span>
+                </div>
+                <div class="delete-icon" onclick="deleteTask(${task.id})">×</div>
+            `;
+            list.appendChild(card);
+        });
+
+        localStorage.setItem("simple_flow_tasks", JSON.stringify(tasks));
     }
 
-    function deleteTask(index) {
-        tasks.splice(index, 1);
-        renderTasks();
+    function toggleTask(id) {
+        tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+        render();
     }
 
-    function updateStats() {
-        const total = tasks.length;
-        const done = tasks.filter(t => t.done).length;
-        stats.innerText = total === 0 ? "No tasks yet!" : Done: ${done} / Total: ${total};
+    function deleteTask(id) {
+        tasks = tasks.filter(t => t.id !== id);
+        render();
     }
 
-    // Support for "Enter" key
-    taskInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") addTask();
-    });
+    // Set title to current day
+    document.getElementById("date-heading").innerText = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
-    // Dark Mode Logic
-    function toggleDark() {
-        const isDark = document.body.classList.toggle("dark");
-        localStorage.setItem("planner_theme", isDark ? "dark" : "light");
-        document.getElementById("themeBtn").innerText = isDark ? "☀️" : "🌙";
-    }
-
-    // Check Theme preference
-    if (localStorage.getItem("planner_theme") === "dark") {
-        document.body.classList.add("dark");
-        document.getElementById("themeBtn").innerText = "☀️";
-    }
-
-    // Initial Render
-    renderTasks();
+    render();
 </script>
 
 </body>
